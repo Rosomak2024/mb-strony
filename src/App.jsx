@@ -90,7 +90,7 @@ function App() {
     setSubmitStatus("sending");
 
     try {
-      const response = await fetch("/__forms.html", {
+      const response = await fetch("/", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -99,7 +99,7 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error("Nie udało się wysłać formularza.");
+        throw new Error(`Błąd formularza: ${response.status}`);
       }
 
       form.reset();

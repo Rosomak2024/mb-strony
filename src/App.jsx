@@ -14,19 +14,53 @@ function App() {
       image: "/images/dzik-home.png",
       technologies: "React • JavaScript • CSS • Vite",
     },
-      
     {
       id: 2,
-      title: "Strona restauracji",
-      category: "Restauracja",
-      className: "restaurant",
+      title: "Restauracja Ostoja",
+      category: "Strona restauracji",
+      image: "/images/ostoja-home.png",
+      technologies: "React • JavaScript • CSS • Vite",
+      url: "https://ostoja-restauracja.picsmaster2025.chatgpt.site",
     },
-  
     {
       id: 3,
       title: "Portfolio",
       category: "Portfolio osobiste",
       className: "portfolio",
+    },
+  ];
+
+  const offerPackages = [
+    {
+      id: "landing-page",
+      name: "Landing Page",
+      price: "799 zł",
+      description: "Dla jednej konkretnej usługi, wydarzenia lub kampanii.",
+      features: [
+        "Jedna nowoczesna strona",
+        "Wersja na telefon i komputer",
+        "Formularz kontaktowy",
+        "Podstawowe SEO",
+        "Publikacja strony",
+        "Jedna seria poprawek",
+      ],
+    },
+    {
+      id: "business-site",
+      name: "Strona firmowa",
+      price: "1499 zł",
+      description:
+        "Dla firmy, która chce profesjonalnie zaprezentować swoją ofertę.",
+      features: [
+        "Do 5 podstron",
+        "Wersja na telefon i komputer",
+        "Formularz kontaktowy",
+        "Podstawowe SEO",
+        "Optymalizacja szybkości",
+        "Publikacja strony",
+        "Dwie serie poprawek",
+      ],
+      popular: true,
     },
   ];
 
@@ -224,83 +258,193 @@ function App() {
 
         </section>
 
-        <section className="section dark" id="cennik">
+        <section className="section dark pricing" id="cennik">
+  <p className="eyebrow">OFERTA STARTOWA</p>
 
-          <h2>Cennik</h2>
+  <h2>Prosta oferta. Jasny zakres.</h2>
 
-          <div className="price-grid">
+  <p className="pricing-lead">
+    Wybierz rozwiązanie dopasowane do Twojej firmy. Każda strona jest
+    tworzona indywidualnie i przygotowana do działania na telefonie.
+  </p>
 
-            <div className="price-card">
-              <h3>Landing Page</h3>
+  <div className="launch-offer">
+    <strong>Szukam 3 firm do pierwszych realizacji</strong>
 
-              <p>od 799 zł</p>
+    <span>
+      Strona firmowa w cenie startowej od 1499 zł, gotowa nawet w 5–7 dni
+      roboczych.
+    </span>
+  </div>
 
-              <button
-                className="btn btn-primary"
-                onClick={() =>
-                  handlePackageClick("Landing Page")
-                }
-              >
-                Wybieram
-              </button>
-            </div>
+  <div className="price-grid">
+    {offerPackages.map((offerPackage) => (
+      <article
+        className={
+          offerPackage.popular
+            ? "price-card popular"
+            : "price-card"
+        }
+        key={offerPackage.id}
+      >
+        {offerPackage.popular && (
+          <span className="popular-label">
+            NAJCZĘŚCIEJ WYBIERANA
+          </span>
+        )}
 
-            <div className="price-card">
-              <h3>Strona firmowa</h3>
+        <h3>{offerPackage.name}</h3>
 
-              <p>od 1499 zł</p>
+        <p className="package-description">
+          {offerPackage.description}
+        </p>
 
-              <button
-                className="btn btn-primary"
-                onClick={() =>
-                  handlePackageClick("Strona firmowa")
-                }
-              >
-                Wybieram
-              </button>
-            </div>
+        <p className="price">
+          <small>od</small> {offerPackage.price}
+        </p>
 
+        <ul>
+          {offerPackage.features.map((feature) => (
+            <li key={feature}>✓ {feature}</li>
+          ))}
+        </ul>
+
+        <button
+          className="btn btn-primary"
+          onClick={() =>
+            handlePackageClick(offerPackage.name)
+          }
+        >
+          Zapytaj o ten pakiet
+        </button>
+      </article>
+    ))}
+  </div>
+
+  <p className="pricing-note">
+    Domena, płatny hosting, przygotowanie tekstów i dodatkowe funkcje są
+    wyceniane osobno. Ostateczna cena zależy od zakresu projektu.
+  </p>
+</section>
+
+<section className="contact-section" id="kontakt">
+  <div className="contact-wrapper">
+    <div className="contact-copy">
+      <p className="eyebrow">POROZMAWIAJMY</p>
+
+      <h2>Zacznijmy od krótkiej rozmowy o Twojej stronie.</h2>
+
+      <p className="contact-description">
+        Napisz, czym zajmuje się Twoja firma i jakiej strony potrzebujesz.
+        Odpowiem z propozycją rozwiązania oraz wstępną wyceną.
+      </p>
+
+      <div className="contact-benefits">
+        <div className="contact-benefit">
+          <span>01</span>
+
+          <div>
+            <strong>Bezpłatna konsultacja</strong>
+            <p>Najpierw ustalimy, czego naprawdę potrzebuje Twoja firma.</p>
           </div>
+        </div>
 
-        </section>
+        <div className="contact-benefit">
+          <span>02</span>
 
-        <section className="section" id="kontakt">
+          <div>
+            <strong>Jasna wycena</strong>
+            <p>Przed rozpoczęciem poznasz zakres, cenę i termin realizacji.</p>
+          </div>
+        </div>
 
-          <h2>Kontakt</h2>
+        <div className="contact-benefit">
+          <span>03</span>
 
-          {selectedPackage && (
-            <p>
-              Wybrany pakiet:{" "}
-              <strong>{selectedPackage}</strong>
-            </p>
-          )}
+          <div>
+            <strong>Bez zobowiązań</strong>
+            <p>Samo wysłanie zapytania nie oznacza zamówienia projektu.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-          <form>
+    <div className="contact-form-card">
+      <div className="contact-form-header">
+        <span>Napisz do mnie</span>
+        <h3>Opowiedz o swoim projekcie</h3>
+      </div>
 
+      {selectedPackage && (
+        <div className="selected-package">
+          <span>Wybrany pakiet</span>
+          <strong>{selectedPackage}</strong>
+        </div>
+      )}
+
+      <form
+        className="contact-form"
+        onSubmit={(event) => event.preventDefault()}
+      >
+        <div className="form-row">
+          <label>
+            Imię
             <input
               type="text"
-              placeholder="Imię"
+              name="name"
+              placeholder="Jak masz na imię?"
+              autoComplete="name"
+              required
             />
+          </label>
 
+          <label>
+            E-mail
             <input
               type="email"
-              placeholder="E-mail"
+              name="email"
+              placeholder="twoj@email.pl"
+              autoComplete="email"
+              required
             />
+          </label>
+        </div>
 
-            <textarea
-              placeholder="Napisz czego potrzebujesz"
-            />
+        <label>
+          Nazwa firmy
+          <input
+            type="text"
+            name="company"
+            placeholder="Nazwa firmy – opcjonalnie"
+            autoComplete="organization"
+          />
+        </label>
 
-            <button
-              className="btn btn-primary"
-              type="submit"
-            >
-              Wyślij
-            </button>
+        <label>
+          Wiadomość
+          <textarea
+            name="message"
+            placeholder="Napisz, czym zajmuje się Twoja firma i jakiej strony potrzebujesz..."
+            rows="6"
+            required
+          />
+        </label>
 
-          </form>
+        <button
+          className="btn btn-primary contact-submit"
+          type="submit"
+        >
+          Wyślij zapytanie
+        </button>
 
-        </section>
+        <p className="form-note">
+          Odpowiem najszybciej, jak to możliwe. Wysłanie zapytania jest
+          bezpłatne i do niczego nie zobowiązuje.
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
 
       </main>
     </div>

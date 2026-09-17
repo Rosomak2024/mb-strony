@@ -2106,3 +2106,52 @@ footer h4 {
     flex-direction: column;
   }
 }
+
+.hidden-field {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  overflow: hidden;
+
+  clip: rect(0 0 0 0);
+
+  white-space: nowrap;
+}
+
+.contact-submit:disabled {
+  cursor: wait;
+
+  opacity: 0.65;
+
+  transform: none;
+}
+
+.form-message {
+  margin: 0;
+  padding: 13px 15px;
+
+  border-radius: 7px;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  text-align: center;
+}
+
+.form-message-success {
+  border: 1px solid rgba(72, 187, 120, 0.4);
+
+  background: rgba(72, 187, 120, 0.1);
+
+  color: #8ee2ad;
+}
+
+.form-message-error {
+  border: 1px solid rgba(245, 101, 101, 0.4);
+
+  background: rgba(245, 101, 101, 0.1);
+
+  color: #ff9b9b;
+}

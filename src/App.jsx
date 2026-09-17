@@ -5,6 +5,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState("");
+  const [submitStatus, setSubmitStatus] = useState("idle");
 
   const projects = [
     {
@@ -20,7 +21,6 @@ function App() {
       category: "Strona restauracji",
       image: "/images/ostoja-home.png",
       technologies: "React • JavaScript • CSS • Vite",
-      url: "https://ostoja-restauracja.picsmaster2025.chatgpt.site",
     },
     {
       id: 3,
@@ -76,46 +76,81 @@ function App() {
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    formData.set(
+      "package",
+      selectedPackage || "Nie wybrano pakietu"
+    );
+
+    setSubmitStatus("sending");
+
+    try {
+      const response = await fetch("/__forms.html", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(formData).toString(),
+      });
+
+      if (!response.ok) {
+        throw new Error("Nie udało się wysłać formularza.");
+      }
+
+      form.reset();
+      setSelectedPackage("");
+      setSubmitStatus("success");
+    } catch (error) {
+      console.error(error);
+      setSubmitStatus("error");
+    }
+  };
+
   return (
     <div className="site">
 
-<header className="nav">
-  <a href="#start" className="logo">
-    MB
-  </a>
+      <header className="nav">
+        <a href="#start" className="logo">
+          MB
+        </a>
 
-  <nav className={menuOpen ? "nav-links active" : "nav-links"}>
-    <a href="#projekty" onClick={() => setMenuOpen(false)}>
-      Projekty
-    </a>
+        <nav className={menuOpen ? "nav-links active" : "nav-links"}>
+          <a href="#projekty" onClick={() => setMenuOpen(false)}>
+            Projekty
+          </a>
 
-    <a href="#cennik" onClick={() => setMenuOpen(false)}>
-      Cennik
-    </a>
+          <a href="#cennik" onClick={() => setMenuOpen(false)}>
+            Cennik
+          </a>
 
-    <a href="#o-mnie" onClick={() => setMenuOpen(false)}>
-      O mnie
-    </a>
+          <a href="#o-mnie" onClick={() => setMenuOpen(false)}>
+            O mnie
+          </a>
 
-    <a href="#kontakt" onClick={() => setMenuOpen(false)}>
-      Kontakt
-    </a>
-  </nav>
+          <a href="#kontakt" onClick={() => setMenuOpen(false)}>
+            Kontakt
+          </a>
+        </nav>
 
-  <a href="#kontakt" className="btn btn-primary nav-cta">
-    Zamów projekt
-  </a>
+        <a href="#kontakt" className="btn btn-primary nav-cta">
+          Zamów projekt
+        </a>
 
-  <button
-    className={menuOpen ? "hamburger active" : "hamburger"}
-    onClick={() => setMenuOpen(!menuOpen)}
-    aria-label="Otwórz menu"
-  >
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
-</header>
+        <button
+          className={menuOpen ? "hamburger active" : "hamburger"}
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Otwórz menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </header>
 
       <main>
 
@@ -149,302 +184,346 @@ function App() {
 
           <div className="project-grid">
 
-          {projects.map((project) => (
-  <article
-    className="project-card"
-    key={project.id}
-    onClick={() => handleProjectClick(project)}
-  >
+            {projects.map((project) => (
+              <article
+                className="project-card"
+                key={project.id}
+                onClick={() => handleProjectClick(project)}
+              >
 
-    {project.image ? (
-      <div className="project-preview project-image">
-        <img
-          src={project.image}
-          alt={project.title}
-        />
-      </div>
-    ) : (
-      <div className={`project-preview ${project.className}`}>
-        <div className="preview-browser">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-    )}
+                {project.image ? (
+                  <div className="project-preview project-image">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                    />
+                  </div>
+                ) : (
+                  <div className={`project-preview ${project.className}`}>
+                    <div className="preview-browser">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </div>
+                )}
 
-    <div className="project-info">
-      <strong>{project.title}</strong>
+                <div className="project-info">
+                  <strong>{project.title}</strong>
 
-      <span>{project.category}</span>
+                  <span>{project.category}</span>
 
-      {project.technologies && (
-        <small>{project.technologies}</small>
-      )}
-    </div>
+                  {project.technologies && (
+                    <small>{project.technologies}</small>
+                  )}
+                </div>
 
-  </article>
-))}
+              </article>
+            ))}
 
           </div>
 
           {selectedProject && (
-  <div
-    className="project-modal"
-    onClick={() => setSelectedProject(null)}
-  >
-    <div
-      className="project-modal-content"
-      onClick={(event) => event.stopPropagation()}
-    >
-      <button
-        className="project-modal-close"
-        onClick={() => setSelectedProject(null)}
-      >
-        ×
-      </button>
+            <div
+              className="project-modal"
+              onClick={() => setSelectedProject(null)}
+            >
+              <div
+                className="project-modal-content"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <button
+                  className="project-modal-close"
+                  onClick={() => setSelectedProject(null)}
+                >
+                  ×
+                </button>
 
-      <div className="project-modal-header">
-        <p className="eyebrow">
-          REALIZACJA
-        </p>
+                <div className="project-modal-header">
+                  <p className="eyebrow">
+                    REALIZACJA
+                  </p>
 
-        <h2>
-          {selectedProject.title}
-        </h2>
+                  <h2>
+                    {selectedProject.title}
+                  </h2>
 
-        <p>
-          {selectedProject.category}
-        </p>
-      </div>
+                  <p>
+                    {selectedProject.category}
+                  </p>
+                </div>
 
-      {selectedProject.image && (
-        <div className="project-modal-image">
-          <img
-            src={selectedProject.image}
-            alt={selectedProject.title}
-          />
-        </div>
-      )}
+                {selectedProject.image && (
+                  <div className="project-modal-image">
+                    <img
+                      src={selectedProject.image}
+                      alt={selectedProject.title}
+                    />
+                  </div>
+                )}
 
-      {selectedProject.technologies && (
-        <p className="project-modal-tech">
-          {selectedProject.technologies}
-        </p>
-      )}
+                {selectedProject.technologies && (
+                  <p className="project-modal-tech">
+                    {selectedProject.technologies}
+                  </p>
+                )}
 
-      <div className="project-modal-actions">
-        {selectedProject.url && (
-          <a
-            href={selectedProject.url}
-            target="_blank"
-            rel="noreferrer"
-            className="btn btn-primary"
-          >
-            Zobacz stronę →
-          </a>
-        )}
+                <div className="project-modal-actions">
+                  {selectedProject.url && (
+                    <a
+                      href={selectedProject.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn-primary"
+                    >
+                      Zobacz stronę →
+                    </a>
+                  )}
 
-        <button
-          className="btn btn-outline"
-          onClick={() => setSelectedProject(null)}
-        >
-          Zamknij
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+                  <button
+                    className="btn btn-outline"
+                    onClick={() => setSelectedProject(null)}
+                  >
+                    Zamknij
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
         </section>
 
         <section className="section dark pricing" id="cennik">
-  <p className="eyebrow">OFERTA STARTOWA</p>
+          <p className="eyebrow">OFERTA STARTOWA</p>
 
-  <h2>Prosta oferta. Jasny zakres.</h2>
+          <h2>Prosta oferta. Jasny zakres.</h2>
 
-  <p className="pricing-lead">
-    Wybierz rozwiązanie dopasowane do Twojej firmy. Każda strona jest
-    tworzona indywidualnie i przygotowana do działania na telefonie.
-  </p>
+          <p className="pricing-lead">
+            Wybierz rozwiązanie dopasowane do Twojej firmy. Każda strona jest
+            tworzona indywidualnie i przygotowana do działania na telefonie.
+          </p>
 
-  <div className="launch-offer">
-    <strong>Szukam 3 firm do pierwszych realizacji</strong>
+          <div className="launch-offer">
+            <strong>Szukam 3 firm do pierwszych realizacji</strong>
 
-    <span>
-      Strona firmowa w cenie startowej od 1499 zł, gotowa nawet w 5–7 dni
-      roboczych.
-    </span>
-  </div>
-
-  <div className="price-grid">
-    {offerPackages.map((offerPackage) => (
-      <article
-        className={
-          offerPackage.popular
-            ? "price-card popular"
-            : "price-card"
-        }
-        key={offerPackage.id}
-      >
-        {offerPackage.popular && (
-          <span className="popular-label">
-            NAJCZĘŚCIEJ WYBIERANA
-          </span>
-        )}
-
-        <h3>{offerPackage.name}</h3>
-
-        <p className="package-description">
-          {offerPackage.description}
-        </p>
-
-        <p className="price">
-          <small>od</small> {offerPackage.price}
-        </p>
-
-        <ul>
-          {offerPackage.features.map((feature) => (
-            <li key={feature}>✓ {feature}</li>
-          ))}
-        </ul>
-
-        <button
-          className="btn btn-primary"
-          onClick={() =>
-            handlePackageClick(offerPackage.name)
-          }
-        >
-          Zapytaj o ten pakiet
-        </button>
-      </article>
-    ))}
-  </div>
-
-  <p className="pricing-note">
-    Domena, płatny hosting, przygotowanie tekstów i dodatkowe funkcje są
-    wyceniane osobno. Ostateczna cena zależy od zakresu projektu.
-  </p>
-</section>
-
-<section className="contact-section" id="kontakt">
-  <div className="contact-wrapper">
-    <div className="contact-copy">
-      <p className="eyebrow">POROZMAWIAJMY</p>
-
-      <h2>Zacznijmy od krótkiej rozmowy o Twojej stronie.</h2>
-
-      <p className="contact-description">
-        Napisz, czym zajmuje się Twoja firma i jakiej strony potrzebujesz.
-        Odpowiem z propozycją rozwiązania oraz wstępną wyceną.
-      </p>
-
-      <div className="contact-benefits">
-        <div className="contact-benefit">
-          <span>01</span>
-
-          <div>
-            <strong>Bezpłatna konsultacja</strong>
-            <p>Najpierw ustalimy, czego naprawdę potrzebuje Twoja firma.</p>
+            <span>
+              Strona firmowa w cenie startowej od 1499 zł, gotowa nawet w 5–7 dni
+              roboczych.
+            </span>
           </div>
-        </div>
 
-        <div className="contact-benefit">
-          <span>02</span>
+          <div className="price-grid">
+            {offerPackages.map((offerPackage) => (
+              <article
+                className={
+                  offerPackage.popular
+                    ? "price-card popular"
+                    : "price-card"
+                }
+                key={offerPackage.id}
+              >
+                {offerPackage.popular && (
+                  <span className="popular-label">
+                    NAJCZĘŚCIEJ WYBIERANA
+                  </span>
+                )}
 
-          <div>
-            <strong>Jasna wycena</strong>
-            <p>Przed rozpoczęciem poznasz zakres, cenę i termin realizacji.</p>
+                <h3>{offerPackage.name}</h3>
+
+                <p className="package-description">
+                  {offerPackage.description}
+                </p>
+
+                <p className="price">
+                  <small>od</small> {offerPackage.price}
+                </p>
+
+                <ul>
+                  {offerPackage.features.map((feature) => (
+                    <li key={feature}>✓ {feature}</li>
+                  ))}
+                </ul>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={() =>
+                    handlePackageClick(offerPackage.name)
+                  }
+                >
+                  Zapytaj o ten pakiet
+                </button>
+              </article>
+            ))}
           </div>
-        </div>
 
-        <div className="contact-benefit">
-          <span>03</span>
+          <p className="pricing-note">
+            Domena, płatny hosting, przygotowanie tekstów i dodatkowe funkcje są
+            wyceniane osobno. Ostateczna cena zależy od zakresu projektu.
+          </p>
+        </section>
 
-          <div>
-            <strong>Bez zobowiązań</strong>
-            <p>Samo wysłanie zapytania nie oznacza zamówienia projektu.</p>
+        <section className="contact-section" id="kontakt">
+          <div className="contact-wrapper">
+            <div className="contact-copy">
+              <p className="eyebrow">POROZMAWIAJMY</p>
+
+              <h2>Zacznijmy od krótkiej rozmowy o Twojej stronie.</h2>
+
+              <p className="contact-description">
+                Napisz, czym zajmuje się Twoja firma i jakiej strony potrzebujesz.
+                Odpowiem z propozycją rozwiązania oraz wstępną wyceną.
+              </p>
+
+              <div className="contact-benefits">
+                <div className="contact-benefit">
+                  <span>01</span>
+
+                  <div>
+                    <strong>Bezpłatna konsultacja</strong>
+                    <p>Najpierw ustalimy, czego naprawdę potrzebuje Twoja firma.</p>
+                  </div>
+                </div>
+
+                <div className="contact-benefit">
+                  <span>02</span>
+
+                  <div>
+                    <strong>Jasna wycena</strong>
+                    <p>Przed rozpoczęciem poznasz zakres, cenę i termin realizacji.</p>
+                  </div>
+                </div>
+
+                <div className="contact-benefit">
+                  <span>03</span>
+
+                  <div>
+                    <strong>Bez zobowiązań</strong>
+                    <p>Samo wysłanie zapytania nie oznacza zamówienia projektu.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="contact-form-card">
+              <div className="contact-form-header">
+                <span>Napisz do mnie</span>
+                <h3>Opowiedz o swoim projekcie</h3>
+              </div>
+
+              {selectedPackage && (
+                <div className="selected-package">
+                  <span>Wybrany pakiet</span>
+                  <strong>{selectedPackage}</strong>
+                </div>
+              )}
+
+              <form
+                className="contact-form"
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                netlify-honeypot="bot-field"
+                onSubmit={handleSubmit}
+              >
+                <input
+                  type="hidden"
+                  name="form-name"
+                  value="contact"
+                />
+
+                <input
+                  type="hidden"
+                  name="subject"
+                  value="Nowe zapytanie ze strony MB Strony"
+                />
+
+                <input
+                  type="hidden"
+                  name="package"
+                  value={selectedPackage || "Nie wybrano pakietu"}
+                />
+
+                <p className="hidden-field">
+                  <label>
+                    Nie wypełniaj tego pola:
+                    <input name="bot-field" />
+                  </label>
+                </p>
+
+                <div className="form-row">
+                  <label>
+                    Imię
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Jak masz na imię?"
+                      autoComplete="name"
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    E-mail
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="twoj@email.pl"
+                      autoComplete="email"
+                      required
+                    />
+                  </label>
+                </div>
+
+                <label>
+                  Nazwa firmy
+                  <input
+                    type="text"
+                    name="company"
+                    placeholder="Nazwa firmy – opcjonalnie"
+                    autoComplete="organization"
+                  />
+                </label>
+
+                <label>
+                  Wiadomość
+                  <textarea
+                    name="message"
+                    placeholder="Napisz, czym zajmuje się Twoja firma i jakiej strony potrzebujesz..."
+                    rows="6"
+                    required
+                  />
+                </label>
+
+                <button
+                  className="btn btn-primary contact-submit"
+                  type="submit"
+                  disabled={submitStatus === "sending"}
+                >
+                  {submitStatus === "sending"
+                    ? "Wysyłanie..."
+                    : "Wyślij zapytanie"}
+                </button>
+
+                {submitStatus === "success" && (
+                  <p className="form-message form-message-success">
+                    Dziękuję! Wiadomość została wysłana. Odpowiem najszybciej,
+                    jak to możliwe.
+                  </p>
+                )}
+
+                {submitStatus === "error" && (
+                  <p className="form-message form-message-error">
+                    Nie udało się wysłać wiadomości. Spróbuj ponownie za chwilę.
+                  </p>
+                )}
+
+                <p className="form-note">
+                  Wysłanie zapytania jest bezpłatne i do niczego nie zobowiązuje.
+                </p>
+              </form>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div className="contact-form-card">
-      <div className="contact-form-header">
-        <span>Napisz do mnie</span>
-        <h3>Opowiedz o swoim projekcie</h3>
-      </div>
-
-      {selectedPackage && (
-        <div className="selected-package">
-          <span>Wybrany pakiet</span>
-          <strong>{selectedPackage}</strong>
-        </div>
-      )}
-
-      <form
-        className="contact-form"
-        onSubmit={(event) => event.preventDefault()}
-      >
-        <div className="form-row">
-          <label>
-            Imię
-            <input
-              type="text"
-              name="name"
-              placeholder="Jak masz na imię?"
-              autoComplete="name"
-              required
-            />
-          </label>
-
-          <label>
-            E-mail
-            <input
-              type="email"
-              name="email"
-              placeholder="twoj@email.pl"
-              autoComplete="email"
-              required
-            />
-          </label>
-        </div>
-
-        <label>
-          Nazwa firmy
-          <input
-            type="text"
-            name="company"
-            placeholder="Nazwa firmy – opcjonalnie"
-            autoComplete="organization"
-          />
-        </label>
-
-        <label>
-          Wiadomość
-          <textarea
-            name="message"
-            placeholder="Napisz, czym zajmuje się Twoja firma i jakiej strony potrzebujesz..."
-            rows="6"
-            required
-          />
-        </label>
-
-        <button
-          className="btn btn-primary contact-submit"
-          type="submit"
-        >
-          Wyślij zapytanie
-        </button>
-
-        <p className="form-note">
-          Odpowiem najszybciej, jak to możliwe. Wysłanie zapytania jest
-          bezpłatne i do niczego nie zobowiązuje.
-        </p>
-      </form>
-    </div>
-  </div>
-</section>
+        </section>
 
       </main>
     </div>
